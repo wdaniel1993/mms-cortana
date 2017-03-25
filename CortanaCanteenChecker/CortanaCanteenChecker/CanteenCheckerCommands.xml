@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
+  <CommandSet xml:lang="de-de" Name="CanteenCheckerCommandSet_de-de">
+    <AppName> Canteen Checker </AppName>
+    <Example>Was gibt es heute bei Campina?</Example>
+
+    <!-- TODO: Foreground commands -->
+
+    <!-- TODO: Background commands -->
+
+    <!-- TODO: Phrase lists -->
+
+  </CommandSet>
+</VoiceCommands>

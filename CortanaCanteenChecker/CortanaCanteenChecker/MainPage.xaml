@@ -1,0 +1,74 @@
+﻿<Page
+    x:Class="CortanaCanteenChecker.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:CortanaCanteenChecker"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    MaxWidth="450">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ChildrenTransitions>
+            <TransitionCollection>
+                <EntranceThemeTransition/>
+            </TransitionCollection>
+        </Grid.ChildrenTransitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="60"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Page title -->
+        <TextBlock x:Name="pageTitle" Text="Canteen Checker"
+                   FontSize="30"
+                   IsHitTestVisible="false" 
+                   VerticalAlignment="Bottom" 
+                   Margin="10,12,10,12" />
+        
+        <StackPanel Grid.Row="1">
+            <TextBox PlaceholderText="Kantinenname" 
+                     Width="Auto"
+                     MaxWidth="450" 
+                     Margin="30,10,30,0"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding NameFilter, Mode=TwoWay}"
+                     IsEnabled="{Binding IsNotLoading}" />
+            
+            <TextBox PlaceholderText="Menu" 
+                     Width="Auto"
+                     MaxWidth="450"
+                     Margin="30,10,30,0"
+                     HorizontalAlignment="Stretch"
+                     Text="{Binding DishFilter, Mode=TwoWay}"
+                     IsEnabled="{Binding IsNotLoading}" />
+            
+            <Button Command="{Binding SearchCanteensCommand}" 
+                    Content="Suche" 
+                    Margin="30,10,30,0"
+                    HorizontalAlignment="Right"
+                    IsEnabled="{Binding IsNotLoading}"/>
+
+        </StackPanel>
+
+        <StackPanel Grid.Row="2">
+            <ListBox ItemsSource="{Binding Canteens}" 
+                     Height="400" 
+                     Width="Auto"
+                     MaxWidth="450"
+                     Margin="30,20,30,0"
+                     HorizontalAlignment="Left"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding Name}" FontSize="19" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Meal}" Margin="20,0,0,0" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+    </Grid>
+</Page>
