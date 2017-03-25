@@ -68,12 +68,12 @@ namespace SpeechAndTTS
                     try
                     {
                         // Create a stream from the text. This will be played using a media element.
-                        SpeechSynthesisStream synthesisStream = await synthesizer.SynthesizeSsmlToStreamAsync(text);
+                        var synthesisStream = await synthesizer.SynthesizeSsmlToStreamAsync(text);
 
                         // Set the source and start playing the synthesized audio stream.
                         media.AutoPlay = true;
                         media.SetSource(synthesisStream, synthesisStream.ContentType);
-                        media.Play();
+                        //media.Play();
                     }
                     catch (System.IO.FileNotFoundException)
                     {
