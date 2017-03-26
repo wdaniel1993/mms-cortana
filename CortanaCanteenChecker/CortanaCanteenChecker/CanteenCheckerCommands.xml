@@ -1,14 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <VoiceCommands xmlns="http://schemas.microsoft.com/voicecommands/1.2">
   <CommandSet xml:lang="de-de" Name="CanteenCheckerCommandSet_de-de">
-    <AppName> Canteen Checker </AppName>
+    <AppName> Kantine Checker </AppName>
     <Example>Was gibt es heute bei Campina?</Example>
 
-    <!-- TODO: Foreground commands -->
+    <Command Name="showTodaysMenueForeground">
+      <Example>Was gibt es heute bei Campina?</Example>
+      <ListenFor RequireAppName="AfterPhrase">Was gibt es heute bei {canteen}?</ListenFor>
+      <Navigate Target="foo"></Navigate>
+    </Command>
 
-    <!-- TODO: Background commands -->
+    <Command Name="showMealForeground">
+      <Example>Wo gibt es heute Schnitzel?</Example>
+      <ListenFor RequireAppName="AfterPhrase">Wo gibt es heute {meal}?</ListenFor>
+      <Navigate Target="foo"></Navigate>
+    </Command>
 
-    <!-- TODO: Phrase lists -->
+    <Command Name="showTodaysMenueBackground">
+      <Example>Zeige das Mittagsmenü von Campina?</Example>
+      <ListenFor RequireAppName="AfterPhrase">Zeige das Mittagsmenü von {canteen}?</ListenFor>
+      <VoiceCommandService Target ="CanteenCheckerVoiceCommandService"></VoiceCommandService>
+    </Command>
+
+    <Command Name="showMealBackground">
+      <Example>Hat heute jemand Schnitzel?</Example>
+      <ListenFor RequireAppName="AfterPhrase">Hat heute jemand {meal}?</ListenFor>
+      <VoiceCommandService Target ="CanteenCheckerVoiceCommandService"></VoiceCommandService>
+    </Command>
+
+    <PhraseList Label="canteen">
+      <Item>Campina</Item>
+      <Item>Chili</Item>
+    </PhraseList>
+
+    <PhraseList Label="meal">
+      <Item>Schnitzel</Item>
+      <Item>Knödel</Item>
+    </PhraseList>
 
   </CommandSet>
 </VoiceCommands>

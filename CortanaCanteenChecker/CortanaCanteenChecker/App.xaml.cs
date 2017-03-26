@@ -84,13 +84,38 @@ namespace CortanaCanteenChecker
                 // version, it's not unreasonable to do this upon app load.
                 StorageFile vcdStorageFile = await Package.Current.InstalledLocation.GetFileAsync(@"CanteenCheckerCommands.xml");
 
-                // TODO: Install command definitions
+                await VoiceCommandDefinitionManager.InstallCommandDefinitionsFromStorageFileAsync(vcdStorageFile);
 
-                // TODO: Update phrase list to help Cortana with all possible canteen names / meal names
+                await UpdatePhraseList();
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Installing Voice Commands Failed: " + ex.ToString());
+            }
+        }
+
+        private async Task UpdatePhraseList()
+        {
+            try
+            {
+                var countryCode = "de-de";
+
+                if (VoiceCommandDefinitionManager.InstalledCommandDefinitions.TryGetValue("CanteenCheckerCommandSet_" + countryCode, out var commandDefinition))
+                {
+                    var canteenService = new CanteenService();
+
+                    var canteens = await canteenService.GetCanteens(null, null);
+
+                    var canteenNames = canteens.Select(c => c.Name).Distinct().ToList();
+                    var mealNames = canteens.Select(c => c.Meal).Distinct().ToList();
+
+                    await commandDefinition.SetPhraseListAsync("canteen", canteenNames);
+                    await commandDefinition.SetPhraseListAsync("meal", mealNames);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("Set PhraseList faild: " + ex.ToString());
             }
         }
 
@@ -102,8 +127,39 @@ namespace CortanaCanteenChecker
 
             // If the app was launched via a Voice Command, this corresponds to the "show trip to <location>" command. 
             // Protocol activation occurs when a tile is clicked within Cortana (via the background task)
-            
-            // TODO: react on voice command activation kind
+
+            if (args.Kind == ActivationKind.VoiceCommand)
+            {
+                var commandArgs = args as VoiceCommandActivatedEventArgs;
+
+                var speechRecognitionResult = commandArgs.Result;
+
+                var voiceCommandName = speechRecognitionResult.RulePath[0];
+                var textSpoken = speechRecognitionResult.Text;
+
+                //var commandMode = SemanticInterpretation("", speechRecognitionResult);
+
+                switch (voiceCommandName)
+                {
+                    case "showTodaysMenueForeground":
+                        var canteen = this.SemanticInterpretation("canteen", speechRecognitionResult);
+
+                        App.MainPageViewModel.NameFilter = canteen;
+
+                        break;
+                    case "showMealForeground":
+                        var meal = this.SemanticInterpretation("meal", speechRecognitionResult);
+
+                        App.MainPageViewModel.DishFilter = meal;
+
+                        break;
+                    default:
+                        Debug.WriteLine("default case");
+                        break;
+                }
+
+                
+            }
 
             // Re"peat the same basic initialization as OnLaunched() above, taking into account whether
             // or not the app is already active.
@@ -126,6 +182,11 @@ namespace CortanaCanteenChecker
 
             // Ensure the current window is active
             Window.Current.Activate();
+        }
+
+        private string SemanticInterpretation(string interpretationKey, SpeechRecognitionResult speechRecognitionResult)
+        {
+            return speechRecognitionResult.SemanticInterpretation.Properties[interpretationKey].FirstOrDefault();
         }
 
         /// <summary>
